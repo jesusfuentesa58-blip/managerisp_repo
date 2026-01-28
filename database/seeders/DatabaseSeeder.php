@@ -15,11 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Ejecutar el seeder de Roles que ya tenemos
+        $this->call(RolesAndPermissionsSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Crear el usuario Administrador manualmente (Sin Faker)
+        $admin = \App\Models\User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Administrador Sistema',
+                'password' => bcrypt('123456789'), // Cambia esto
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $admin->assignRole('super-admin');
     }
 }
